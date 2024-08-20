@@ -14,10 +14,9 @@ public class GetApi : MonoBehaviour
     private string selectedCity;
     private string selectedCountry;
 
-    // Start is called before the first frame update
     void Start()
     {
-        // GetWeatherByCityCountry("Richmond", "CA");
+        
     }
 
     public void GetWeatherByCityCountry(string cityName, string countryName){
@@ -36,7 +35,7 @@ public class GetApi : MonoBehaviour
         UnityWebRequest request = UnityWebRequest.Get(apiAddress);
         yield return request.SendWebRequest();
         if(request.result != UnityWebRequest.Result.ConnectionError){
-            Debug.Log(request.downloadHandler.text);
+            // Debug.Log(request.downloadHandler.text);
             weatherState = JsonUtility.FromJson<WeatherState>(request.downloadHandler.text);
             string newState = weatherState.weather[0].main;
             if (newState != currState){

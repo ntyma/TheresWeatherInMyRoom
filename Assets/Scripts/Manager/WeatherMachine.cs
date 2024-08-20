@@ -52,7 +52,6 @@ public class WeatherMachine : MonoBehaviour
                 break;
         }
         currentState.EnterState();
-        Debug.Log("Changed WeatherSTate");
     }
 
 }
