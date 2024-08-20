@@ -8,7 +8,9 @@ public class GetApi : MonoBehaviour
 {
     // private string apiKey = "92e5d88a41fc01855ef6b23beda71e02";
     public WeatherState weatherState;
+    private String currState;
     public Action<WeatherState> OnWeatherStateChangeFinished;
+    public Action OnWeatherIsSame;
     private string selectedCity;
     private string selectedCountry;
 
@@ -36,7 +38,13 @@ public class GetApi : MonoBehaviour
         if(request.result != UnityWebRequest.Result.ConnectionError){
             Debug.Log(request.downloadHandler.text);
             weatherState = JsonUtility.FromJson<WeatherState>(request.downloadHandler.text);
-            OnWeatherStateChangeFinished.Invoke(weatherState);
+            string newState = weatherState.weather[0].main;
+            if (newState != currState){
+                OnWeatherStateChangeFinished.Invoke(weatherState);
+                currState = newState;
+            } else {
+                OnWeatherIsSame.Invoke();
+            }
         } else 
         {
             Debug.Log(request.error);    

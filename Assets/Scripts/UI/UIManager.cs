@@ -9,8 +9,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] GetApi api;
     [SerializeField] TMP_Dropdown countryDropdown;
     [SerializeField] TMP_InputField cityInput;
-    [SerializeField] private string city;
-    [SerializeField] private string country;
+    [SerializeField] TMP_Text infoText;
+    private string city;
+    private string country;
+
+    private string weatherString;
 
     [SerializeField] public List<String> countries = new List<string>{"CA" , "US", "UK", "AU"};
 
@@ -25,6 +28,7 @@ public class UIManager : MonoBehaviour
         instance = this; 
 
         api.OnWeatherStateChangeFinished += WeatherStateChanged;
+        api.OnWeatherIsSame += UpdateLocationText;
     }
     public void GetWeather(){
         if(cityInput.text == "") return;
@@ -34,7 +38,39 @@ public class UIManager : MonoBehaviour
     }
 
     public void WeatherStateChanged(WeatherState state){
+        UpdateInfoText(state);
         onWeatherChange.Invoke(state);
+    }
+
+    private void UpdateLocationText(){
+        infoText.text = "The weather in " + city + ", " + country + " : " + weatherString;
+    }
+
+    private void UpdateInfoText(WeatherState weatherState){
+        Weather weather = weatherState.weather[0];
+        String state = weather.main;
+        switch (state) {
+            case "Rain":
+                weatherString = "Raining";
+                break;
+            case "Clouds":
+                weatherString = "Cloudy";
+                break;
+            case "Drizzle":
+                weatherString = "Drizzling";
+                break;
+            case "Snow":
+                weatherString = "Snowing";
+                break;
+            case "Clear" :
+                weatherString = "Clear Skies";
+                break;
+            default :
+                weatherString = "Clear Skies";
+                break;
+        }
+
+        infoText.text = "The weather in " + city + ", " + country + " : " + weatherString;
     }
 
     public List<String> GetCountryCodes() {
