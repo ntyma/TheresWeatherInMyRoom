@@ -6,18 +6,28 @@ using UnityEngine;
 public class WeatherMachine : MonoBehaviour
 {
     [SerializeField] private WeatherState weatherState;
+    [SerializeField] private RainState rainState;
+    [SerializeField] private SunnyState sunState;
+    private IWorldState currentState;
 
     void Start() {
         UIManager.instance.onWeatherChange += ChangeWeatherState;
+        currentState = rainState;
     }
     public void ChangeWeatherState(WeatherState newState){
         weatherState = newState;
         Weather weather = weatherState.weather[0];
         String state = weather.main;
+        Debug.Log("=====" + state + "=======");
+
+        if(currentState != null){
+            currentState.ExitState();
+        }
 
         switch (state) {
             case "Rain":
-                Debug.Log("rain");
+                Debug.Log("rain state ON");
+                currentState = rainState;
                 break;
             case "Clouds":
                 Debug.Log("clouds");
@@ -29,16 +39,16 @@ public class WeatherMachine : MonoBehaviour
                 Debug.Log("snow");
                 break;
             case "Clear" :
-                Debug.Log("clear");
+                Debug.Log("sun state ON");
+                currentState = sunState;
                 break;
             default :
-                Debug.Log("error");
+                Debug.Log("sun state ON");
+                currentState = sunState;
                 break;
         }
-
-
+        currentState.EnterState();
         Debug.Log("Changed WeatherSTate");
     }
-
 
 }

@@ -30,10 +30,6 @@ public class RainState : MonoBehaviour, IWorldState
         isRising = false;
     }
 
-    public void IdleState()
-    {
-        isIdle = true;
-    }
 
     void Update(){
 
@@ -43,19 +39,20 @@ public class RainState : MonoBehaviour, IWorldState
         else if(!isRising) {
             waterPlane.transform.position = Vector3.Lerp(waterPlane.transform.position, startPoint.position, risingSpeed * loweringMultiplier * Time.deltaTime);
         }
-        // if(Input.GetKeyDown(KeyCode.X)){
-        //     ExitState();
-        // }
     }
 
     private void PlayRainParticles(){
         float tinyStep = 0.000001f;
         rainParticles.Simulate(tinyStep, true, true, false);
-        rainParticles.Play();
+        if(!rainParticles.isPlaying) {
+            rainParticles.Play();
+        }
     }
 
     private void StopRainParticles(){
-        rainParticles.Stop();
+        if(rainParticles.isPlaying) {
+            rainParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 
 }
