@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking; 
 
@@ -10,7 +11,9 @@ public class GetApi : MonoBehaviour
     public WeatherState weatherState;
     private String currState;
     public Action<WeatherState> OnWeatherStateChangeFinished;
-    public Action OnWeatherIsSame;
+    public Action<WeatherState> OnWeatherIsSame;
+
+    public Action OnStateNullError;
     private string selectedCity;
     private string selectedCountry;
 
@@ -37,13 +40,18 @@ public class GetApi : MonoBehaviour
         if(request.result != UnityWebRequest.Result.ConnectionError){
             // Debug.Log(request.downloadHandler.text);
             weatherState = JsonUtility.FromJson<WeatherState>(request.downloadHandler.text);
-            string newState = weatherState.weather[0].main;
-            if (newState != currState){
-                OnWeatherStateChangeFinished.Invoke(weatherState);
-                currState = newState;
+            if(weatherState != null){
+                string newState = weatherState.weather[0].main;
+                if (newState != currState){
+                    OnWeatherStateChangeFinished.Invoke(weatherState);
+                    currState = newState;
+                } else {
+                    OnWeatherIsSame.Invoke(weatherState);
+                }
             } else {
-                OnWeatherIsSame.Invoke();
-            }
+                OnStateNullError.Invoke();
+                yield break;
+            }  
         } else 
         {
             Debug.Log(request.error);    

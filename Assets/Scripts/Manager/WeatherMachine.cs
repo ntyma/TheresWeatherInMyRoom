@@ -27,27 +27,21 @@ public class WeatherMachine : MonoBehaviour
 
         switch (state) {
             case "Rain":
-                Debug.Log("rain state ON");
                 currentState = rainState;
                 break;
             case "Clouds":
-                Debug.Log("clouds");
                 currentState = cloudyState;
                 break;
             case "Drizzle":
-                Debug.Log("drizzling");
                 currentState = rainState;
                 break;
             case "Snow":
-                Debug.Log("snow");
                 currentState = rainState;
                 break;
             case "Clear" :
-                Debug.Log("sun state ON");
                 currentState = sunState;
                 break;
             default :
-                Debug.Log("sun state ON");
                 currentState = sunState;
                 break;
         }
